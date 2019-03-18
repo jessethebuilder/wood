@@ -1,0 +1,3 @@
+class WoodApiController < ApplicationController
+
+end

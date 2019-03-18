@@ -35,6 +35,10 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 
+group :development, :test do
+  gem 'faker'
+end
+
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console', '>= 3.3.0'
@@ -50,13 +54,14 @@ group :test do
   gem 'factory_bot_rails'
   gem 'poltergeist'
   gem 'rspec-rails'
-  gem 'database_cleaner'
   gem 'shoulda'
   gem 'webmock'
   gem 'guard-rspec'
   gem 'vcr'
   gem 'launchy'
   gem 'rails-controller-testing'
+  gem 'mongoid-rspec'
+  gem 'database_cleaner'
 end
 
 gem 'mongoid'
@@ -72,3 +77,4 @@ gem 'ejs'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'wdm', '>= 0.1.0' if Gem.win_platform?
