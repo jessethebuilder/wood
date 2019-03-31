@@ -13,13 +13,13 @@ class WoodApiOrdersController < WoodApiController
     end
   end
 
-  # def update
-  #   if @order.update(order_params)
-  #     render template: api_template('orders/show')
-  #   else
-  #     render json: @order.errors, status: :unprocessable_entity
-  #   end
-  # end
+  def update
+    if @order.update(order_params)
+      render template: api_template('orders/show')
+    else
+      render json: @order.errors, status: :unprocessable_entity
+    end
+  end
 
   def show
     render template: api_template('orders/show')
@@ -54,7 +54,7 @@ class WoodApiOrdersController < WoodApiController
         :product_id, :price
       ],
       transactions: [
-    
+
       ]
     )
   end

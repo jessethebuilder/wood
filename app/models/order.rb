@@ -24,6 +24,7 @@ class Order
   end
 
   def includes_transaction
-    errors.add(:transaction, 'must be present') if transactions.count < 1
+    # TODO
+    # errors.add(:transaction, 'must be present') if transactions.count < 1
   end
 end

@@ -1,6 +1,11 @@
 version = ENV.fetch('WOOD_API_VERSION')
 controller_path = "#{Rails.root}/app/controllers/api/#{version}/"
-Dir["#{controller_path}*.rb"].each {|file| require file }
+
+require "#{controller_path}wood_api_controller.rb"
+
+Dir["#{controller_path}*.rb"].each do |file|
+  require file
+end
 
 def wood_api_routes
   scope format: true, constraints: {format: :json} do
