@@ -2,7 +2,6 @@ class OrderItem
   include Mongoid::Document
 
   embedded_in :order
-  # belongs_to :order
 
   belongs_to :product
 

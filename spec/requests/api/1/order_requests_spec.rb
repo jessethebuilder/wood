@@ -54,27 +54,52 @@ describe 'Order Requests', type: :request do
         response.status.should == 422
       end
 
-      it 'should return a hash of errors, if any' do
+      it 'should return a hash of errors with order JSON, if any' do
         @order_params[:order][:store_id] = nil
         post '/orders.json', params: @order_params
         response.body.should == {
-          store: ["can't be blank"]
+          "id"=>nil,
+          "created_at"=>nil,
+          "updated_at"=>nil,
+          "store_id"=> @store.to_param,
+          "order_items"=>[
+            {
+              "id"=>nil,
+              "price"=> price,
+              "product_id"=> @product.to_param,
+            }
+          ],
+          errors: {
+            store: ["can't be blank"]
+          }
         }.to_json
       end
 
-      # it 'should return errors about embedded objects' do
-      #   pending 'TODO'
-      #   @order_params[:order][:order_items].first[:price] += 1
-      #   post '/orders.json', params: @order_params
-      #   response.body.should == {
-      #     order_items: [
-      #       {
-      #         product_id: @product.to_param,
-      #
-      #       }
-      #     ]
-      #   }
-      # end
+      it 'should return errors about embedded objects' do
+        price = @product.price + 1
+        @order_params[:order][:order_items].first[:price] = price # Price must match
+
+        post '/orders.json', params: @order_params
+        response.body.should == {
+          "id"=>nil,
+          "created_at"=>nil,
+          "updated_at"=>nil,
+          "store_id"=> @store.to_param,
+          "order_items"=>[
+            {
+              "id"=>nil,
+              "price"=> @product.price,
+              "product_id"=> @product.to_param,
+              "errors"=>{
+                "price"=>["must match current Product price"]
+              }
+            }
+          ],
+          errors: {
+            order_items: ['is invalid']
+          }
+        }.to_json
+      end
     end
   end # Create
 
@@ -136,11 +161,18 @@ describe 'Order Requests', type: :request do
     end
   end # Show
 
-  describe 'GET /orders (Index)' do
-    it 'should return all orders as JSON' do
-      order2 = create(:order)
-
+  describe 'GET /orders/ (Index)' do
+    it 'should require a store_id' do
       get '/orders.json'
+      response.status.should == 403
+      response.body.should == 'store_id param required'
+    end
+
+    it 'should return all @store orders as JSON' do
+      order2 = create(:order, store: @store)
+      other_order = create(:order) # Will not be in returned data
+
+      get "/orders.json?store_id=#{@store.to_param}"
 
       response.body.should == [
         JSON.parse(json_order_results(@order)),

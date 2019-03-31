@@ -15,7 +15,8 @@ class Order
     order_items.inject(0){ |sum, oi| sum += oi.price }
   end
 
-  validate :total_is_positive, :includes_transaction
+  validate :total_is_positive
+  # , :includes_transaction
 
   private
 
@@ -23,8 +24,7 @@ class Order
     errors.add(:total, 'must be positive') if total <= 0
   end
 
-  def includes_transaction
-    # TODO
-    # errors.add(:transaction, 'must be present') if transactions.count < 1
-  end
+  # def includes_transaction
+  #   errors.add(:transaction, 'must be present') if transactions.count < 1
+  # end
 end

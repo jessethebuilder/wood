@@ -1,24 +1,14 @@
 class WoodApiOrdersController < WoodApiController
-  # before_action :set_order, only: [:show, :update, :destroy]
-  before_action :set_order, only: [:show]
+  before_action :set_order, only: [:show, :update, :destroy]
 
   def create
-    @order = Order.new(order_params)
-
-    if @order.save
-      render template: api_template('orders/show')
-    else
-      #TODO render more complex JSON here, showing assoc. errors
-      render json: @order.errors, status: :unprocessable_entity
-    end
+    @order = Order.create(order_params)
+    render template: api_template('orders/show'), status: order_status
   end
 
   def update
-    if @order.update(order_params)
-      render template: api_template('orders/show')
-    else
-      render json: @order.errors, status: :unprocessable_entity
-    end
+    @order.update(order_params)
+    render template: api_template('orders/show'), status: order_status
   end
 
   def show
@@ -31,10 +21,10 @@ class WoodApiOrdersController < WoodApiController
     render template: api_template('orders/index')
   end
 
-  # def destroy
-  #   @order.destroy
-  #   head :no_content
-  # end
+  def destroy
+    @order.destroy
+    head :no_content
+  end
 
   private
 
@@ -57,5 +47,9 @@ class WoodApiOrdersController < WoodApiController
 
       ]
     )
+  end
+
+  def order_status
+    @order.errors.count > 0 ? 422 : 200
   end
 end

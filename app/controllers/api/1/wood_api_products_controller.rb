@@ -2,21 +2,13 @@ class WoodApiProductsController < WoodApiController
   before_action :set_product, only: [:update, :show, :destroy]
 
   def create
-    @product = Product.new(product_params)
-
-    if @product.save
-      render template: api_template('products/show')
-    else
-      render json: @product.errors, status: :unprocessable_entity
-    end
+    @product = Product.create(product_params)
+    render template: api_template('products/show'), status: product_status
   end
 
   def update
-    if @product.update(product_params)
-      render template: api_template('products/show')
-    else
-      render json: @product.errors, status: :unprocessable_entity
-    end
+    @product.update(product_params)
+    render template: api_template('products/show'), status: product_status
   end
 
   def show
@@ -24,9 +16,14 @@ class WoodApiProductsController < WoodApiController
   end
 
   def index
-    # TODO scope by Store
-    @products = Product.all
-    render template: api_template('products/index')
+    @store = Store.where(id: params[:store_id]).first
+
+    if @store # must be provided.
+      render json: 'store_id param required', status: 403
+    else
+      @products = Product.all
+      render template: api_template('products/index')
+    end
   end
 
   def destroy
@@ -44,5 +41,9 @@ class WoodApiProductsController < WoodApiController
 
   def set_product
     @product = Product.find(params[:id])
+  end
+
+  def product_status
+    @product.errors.count > 0 ? 422 : 200
   end
 end
