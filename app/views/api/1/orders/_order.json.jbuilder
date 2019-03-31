@@ -9,3 +9,7 @@ json.order_items do
                   order_item: order_item
   end
 end
+
+if order.errors.count > 0
+  json.errors order.errors
+end

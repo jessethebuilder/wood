@@ -13,6 +13,8 @@ Capybara.javascript_driver = :poltergeist
 
 require 'mongoid-rspec'
 
+RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = 10000
+
 RSpec.configure do |config|
   config.filter_run :focus => true
   config.run_all_when_everything_filtered = true

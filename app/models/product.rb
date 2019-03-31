@@ -12,4 +12,8 @@ class Product
   validates :price, presence: true, numericality: {greater_than: 0}
 
   field :description, type: String
+
+  def order_items
+    OrderItem.where(product_id: self.id) 
+  end
 end

@@ -2,43 +2,27 @@ class WoodApiStoresController < WoodApiController
   before_action :set_store, only: [:show, :update, :destroy]
 
   def create
-    @store = Store.new(store_params)
-    respond_to do |format|
-      if @store.save
-        format.json{ render template: api_template('stores/show') }
-      else
-        format.json{ render json: @store.errors, status: :unprocessable_entity }
-      end
-    end
+    @store = Store.create(store_params)
+    render template: api_template('stores/show'), status: store_status
   end
 
   def update
-    respond_to do |format|
-      if @store.update(store_params)
-        format.json{ render template: api_template('stores/show') }
-      else
-        format.json{ render json: @store.errors, status: :unprocessable_entity }
-      end
-    end
+    @store.update(store_params)
+    render template: api_template('stores/show'), status: store_status
   end
 
   def show
-    respond_to do |format|
-      format.json{ render template: api_template('stores/show') }
-    end
+    render template: api_template('stores/show')
   end
 
   def index
     @stores = Store.all
-
-    respond_to do |format|
-      format.json{ render template: api_template('stores/index') }
-    end
+    render template: api_template('stores/index')
   end
 
   def destroy
     @store.destroy
-    respond_to { |format| format.json { head :no_content } }
+    head :no_content
   end
 
   private
@@ -49,5 +33,9 @@ class WoodApiStoresController < WoodApiController
 
   def store_params
     params.require(:store).permit(:name, :user_id)
+  end
+
+  def store_status
+    @store.errors.count > 0 ? 422 : 200
   end
 end

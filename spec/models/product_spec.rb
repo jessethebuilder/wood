@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe Product, type: :model do
+  before do
+    @product = build(:product)
+  end
+
   describe 'Validations' do
     it{ should validate_presence_of :name }
 
@@ -10,6 +14,8 @@ describe Product, type: :model do
 
   describe 'Associatiions' do
     it{ should belong_to :store }
-    # it{ should have_many :order_items }
   end
+
+  describe 'Methods' do
+  end # Methods
 end
